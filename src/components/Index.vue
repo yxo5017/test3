@@ -28,13 +28,13 @@
     <!--全件表示を押すと、絞り込みが解除されて全項目が再表示される。-->
     <!--また絞り込みの検索結果テーブルと。「検索結果」のタイトルが非表示になる。-->
     <button v-if="displayAllParams()" @click="displayAll()">全件表示</button>
-
+    <button @click="testSearch()">検索テスト</button>
     <!--絞り込み検索されると、「検索結果＊＊件中＊＊件表示」と表示される。-->
     <p v-if="displayAllParams()">検索結果：{{ lists.length }}件中 {{ empty_list.length }} 表示</p>
 
     <!--デフォルト状態で表示されているテーブル-->
     <!--firebaseに保管されているデータを全て表示している。-->
-    <table v-if="tableDisplayParams()">
+    <table>
       <tr>
         <th>ID</th>
         <th>カテゴリ</th>
@@ -56,7 +56,7 @@
     </table>
     <table>
 
-      <!--絞り込み検索されると、「検索結果＊＊件中＊＊件表示」と表示される。-->
+      <!--あ絞り込み検索されると、「検索結果＊＊件中＊＊件表示」と表示される。-->
       <h3 v-if="displayAllParams()">検索結果</h3>
       <!--絞り込み検索されると、検索結果を格納したテーブルが表示される。-->
       <tr v-if="displayAllParams()">
@@ -196,6 +196,21 @@ export default {
     clearSearch(){
       this.searchWord = null
     },
+    testSearch(){
+      db.collection('lists').where("カテゴリ", "==", true)
+      .get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc){
+          console.log(doc.id, " => ", doc.data());
+        });
+
+      })
+      .catch(function(error) {
+        console.log("Error getting documents: ", error);
+      });
+    },
+
+
 
     //テーブル表の全項目を検索している。
     //カテゴリ、タイトル、詳細、ステータスの項目をループさせている。
@@ -255,6 +270,8 @@ export default {
 </script>
 
 <style scoped>
-
+h3 {
+  width: 200px
+}
 
 </style>
